@@ -1,0 +1,294 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* Animatable angle for the travelling glow border */
+@property --angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* Teravex Digital brand palette */
+@theme {
+  --color-brand-50: #eef5ff;
+  --color-brand-100: #d9e8ff;
+  --color-brand-200: #bcd6ff;
+  --color-brand-300: #8ebcff;
+  --color-brand-400: #5996ff;
+  --color-brand-500: #3371fb;
+  --color-brand-600: #1d52f0;
+  --color-brand-700: #153ddc;
+  --color-brand-800: #1833b2;
+  --color-brand-900: #1a318c;
+  --color-brand-950: #142055;
+
+  --color-navy-800: #0d2a5c;
+  --color-navy-900: #08193d;
+  --color-navy-950: #050f29;
+
+  --shadow-soft: 0 1px 2px rgb(16 42 107 / 0.04), 0 8px 24px -8px rgb(16 42 107 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(16 42 107 / 0.05), 0 22px 48px -16px rgb(21 61 220 / 0.28);
+  --shadow-glow: 0 10px 30px -8px rgb(29 82 240 / 0.55);
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-float-slow: float 10s ease-in-out infinite;
+  --animate-blur-in: blur-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-shine: shine 4s ease-in-out infinite;
+
+  @keyframes blur-in {
+    from {
+      opacity: 0;
+      filter: blur(14px);
+      transform: translateY(0.35em);
+    }
+    to {
+      opacity: 1;
+      filter: blur(0);
+      transform: translateY(0);
+    }
+  }
+  @keyframes shine {
+    0%,
+    60% {
+      transform: translateX(-120%) skewX(-20deg);
+    }
+    100% {
+      transform: translateX(220%) skewX(-20deg);
+    }
+  }
+  @keyframes gradient-pan {
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  @keyframes spin-angle {
+    to {
+      --angle: 360deg;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+}
+
+:root {
+  --background: #f7faff;
+  --foreground: #0b1636;
+  --card: #ffffff;
+  --card-foreground: #0b1636;
+  --popover: #ffffff;
+  --popover-foreground: #0b1636;
+  --primary: #1d52f0;
+  --primary-foreground: #ffffff;
+  --secondary: #eaf2ff;
+  --secondary-foreground: #142055;
+  --muted: #eef3fb;
+  --muted-foreground: #52607d;
+  --accent: #e6f7fc;
+  --accent-foreground: #0b4a63;
+  --destructive: #dc2626;
+  --border: #dfe7f4;
+  --input: #d3ddee;
+  --ring: #3371fb;
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply scroll-smooth font-sans;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: clip;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading tracking-tight text-balance;
+  }
+  p {
+    @apply text-pretty;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: rgb(29 82 240 / 0.18);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Max-width page container used by every section */
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Blue → cyan gradient text used for highlighted heading words (slowly flowing) */
+  .text-gradient {
+    @apply bg-linear-to-r from-brand-600 via-cyan-500 to-brand-600 bg-clip-text text-transparent;
+    background-size: 200% 100%;
+    animation: gradient-pan 8s ease-in-out infinite;
+  }
+
+  /* Cursor spotlight: a soft glow + glowing border that follow the mouse (set by InteractiveEffects) */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight::before,
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+  .spotlight::before {
+    z-index: -1;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(51 113 251 / 0.1), transparent 45%);
+  }
+  .spotlight::after {
+    padding: 1.5px;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(29 82 240 / 0.75), rgb(34 211 238 / 0.45) 35%, transparent 70%);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+  }
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  /* Animated glowing border that travels around a card */
+  .glow-border::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1.5px;
+    pointer-events: none;
+    background: conic-gradient(from var(--angle), transparent 0 55%, rgb(34 211 238 / 0.9) 72%, rgb(51 113 251 / 0.9) 82%, transparent 95%);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    animation: spin-angle 6s linear infinite;
+  }
+
+  /* Light sweep across primary buttons */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .btn-shine::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 40%;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    animation: var(--animate-shine);
+  }
+
+
+  /* GSAP: start hidden, the animation fades them in (a <noscript> rule in the layout shows them without JS) */
+  .gsap-reveal,
+  .gsap-item {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .gsap-reveal,
+    .gsap-item {
+      visibility: visible;
+    }
+  }
+  /* Line masks from SplitText: leave room for descenders (g, y, p) so they are never clipped */
+  .split-line-mask {
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+  }
+
+  /* Frosted card surface */
+  .surface {
+    @apply rounded-2xl border border-white/70 bg-white/80 shadow-soft backdrop-blur-md;
+  }
+
+  /* Subtle dotted pattern used as decoration */
+  .bg-dots {
+    background-image: radial-gradient(rgb(29 82 240 / 0.35) 1.2px, transparent 1.2px);
+    background-size: 14px 14px;
+  }
+
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(29 82 240 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(29 82 240 / 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+}
